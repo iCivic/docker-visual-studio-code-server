@@ -44,7 +44,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Golang SDK
-ENV GO_VERSION="1.12.2"
+ENV GO_VERSION="1.12.4"
 RUN curl -sL https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz | tar -xz -C /usr/local
 
 # Java SDK
