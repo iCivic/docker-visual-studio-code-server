@@ -91,7 +91,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     net-tools \
     && rm -rf /var/lib/apt/lists/*
 
-RUN locale-gen en_US.UTF-8
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
 
 ENV CODE_VERSION="1.792-vsc1.33.1"
 RUN curl -sL https://github.com/codercom/code-server/releases/download/${CODE_VERSION}/code-server${CODE_VERSION}-linux-x64.tar.gz | tar --strip-components=1 -zx -C /usr/local/bin code-server${CODE_VERSION}-linux-x64/code-server
@@ -101,9 +102,6 @@ RUN groupadd -r coder \
     && useradd -m -r coder -g coder -s /bin/bash \
     && echo "coder ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
 USER coder
-
-# Setup User Profile
-ENV LC_ALL=en_US.UTF-8
 
 # Setup User Go Environment
 RUN mkdir /home/coder/go
