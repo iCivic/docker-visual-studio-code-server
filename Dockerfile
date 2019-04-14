@@ -51,9 +51,13 @@ RUN curl -sL https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz | tar -
 # Python SDK
 RUN apt-get update && apt-get install --no-install-recommends -y \
     python3 \
+    python-dev \
     python3-pip \
-    pylint \
     && rm -rf /var/lib/apt/lists/*
+
+RUN python3 -m pip install --upgrade setuptools \
+    && python3 -m pip install wheel \
+    && python3 -m pip install -U pylint
 
 # Java SDK
 RUN apt-get update && apt-get install --no-install-recommends -y \
