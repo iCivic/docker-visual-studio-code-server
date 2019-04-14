@@ -34,6 +34,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     git \
     sudo \
     wget \
+    gdb \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
@@ -46,6 +47,13 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 # Golang SDK
 ENV GO_VERSION="1.12.4"
 RUN curl -sL https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz | tar -xz -C /usr/local
+
+# Python SDK
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    python3 \
+    python3-pip \
+    pylint \
+    && rm -rf /var/lib/apt/lists/*
 
 # Java SDK
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -134,6 +142,10 @@ RUN go get -u \
     github.com/uudashr/gopkgs/cmd/gopkgs \
     && rm -rf $GOPATH/src \
     && rm -rf $GOPATH/pkg
+
+# Setup Python Extension
+RUN mkdir -p ${VSCODE_EXTENSIONS}/python \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-python/vsextensions/python/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/python extension
 
 # Setup Java Extension
 RUN mkdir -p ${VSCODE_EXTENSIONS}/java \
