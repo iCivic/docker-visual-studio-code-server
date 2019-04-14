@@ -6,6 +6,22 @@ This repository hosts a Dockerfile and Helm Chart to run VSCode on Kubernetes. W
 
 ![Angular Demo](docs/demo_ng.png)
 
+## Pre-installed SDKs
+
+- [Go](https://golang.org/) SDK & Debugging
+- [Java](https://openjdk.java.net/), Maven, Gradle & Debugging & Testing
+- [Python](https://www.python.org/) SDK & Debugging
+- [Node.js](https://nodejs.org) SDK & Debugging
+- [Kubernetes](https://kubernetes.io/) Cluster Magenent
+- [Browser Preview](https://github.com/auchenberg/vscode-browser-preview) (Chromium inside VS Code)
+
+## Pre-installed CLIs
+
+- [Azure](https://docs.microsoft.com/en-us/cli/) Command Line Interface
+- [Kubernetes](https://kubectl.docs.kubernetes.io/) Command Line Interface
+- [Kubernetes Helm](https://helm.sh/) Command Line Interface
+- [Cloud Foundry](https://docs.cloudfoundry.org/cf-cli/) Command Line Interface
+
 ## Run in Docker
 
 ```bash
