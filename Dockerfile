@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:18.10
 
 # Packages
 RUN apt-get update && apt-get install --no-install-recommends -y \
