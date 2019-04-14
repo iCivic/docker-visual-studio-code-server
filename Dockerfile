@@ -52,6 +52,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     default-jre-headless \
     default-jdk-headless \
     maven \
+    gradle \
     && rm -rf /var/lib/apt/lists/*
 
 # .NET Core SDK
