@@ -72,16 +72,16 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 #    && rm -rf /var/lib/apt/lists/*
 
 # Chromium
-# RUN apt-get update && apt-get install --no-install-recommends -y \
-#    chromium-browser \
-#    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    chromium-browser \
+    && rm -rf /var/lib/apt/lists/*
 
 # Chrome
-RUN curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
-RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    google-chrome-stable \
-    && rm -rf /var/lib/apt/lists/*
+# RUN curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
+# RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
+# RUN apt-get update && apt-get install --no-install-recommends -y \
+#    google-chrome-stable \
+#    && rm -rf /var/lib/apt/lists/*
 
 # Code-Server
 RUN apt-get update && apt-get install --no-install-recommends -y \
