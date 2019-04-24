@@ -95,6 +95,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
+ENV DISABLE_TELEMETRY true
 
 ENV CODE_VERSION="1.939-vsc1.33.1"
 RUN curl -sL https://github.com/codercom/code-server/releases/download/${CODE_VERSION}/code-server${CODE_VERSION}-linux-x64.tar.gz | tar --strip-components=1 -zx -C /usr/local/bin code-server${CODE_VERSION}-linux-x64/code-server
@@ -116,30 +117,34 @@ ENV PATH "${PATH}:/usr/local/go/bin:/home/coder/go/bin"
 # ENV PATH "${PATH}:${MSBuildSDKsPath}"
 
 # Setup User Visual Studio Code Extentions
+ENV VSCODE_USER "/home/coder/.local/share/code-server/User"
 ENV VSCODE_EXTENSIONS "/home/coder/.local/share/code-server/extensions"
+
+RUN mkdir -p ${VSCODE_USER}
+COPY --chown=coder:coder settings.json /home/coder/.local/share/code-server/User/
 
 # Setup Go Extension
 RUN mkdir -p ${VSCODE_EXTENSIONS}/go \
     && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-vscode/vsextensions/Go/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/go extension
 
 RUN go get -u \
-    github.com/mdempsky/gocode \
+    github.com/stamblerre/gocode \
     github.com/uudashr/gopkgs/cmd/gopkgs \
     github.com/ramya-rao-a/go-outline \
     github.com/acroca/go-symbols \
     golang.org/x/tools/cmd/guru \
     golang.org/x/tools/cmd/gorename \
-    github.com/go-delve/delve/cmd/dlv \
-    github.com/stamblerre/gocode \
     github.com/rogpeppe/godef \
+    github.com/zmb3/gogetdoc \
     github.com/sqs/goreturns \
+    golang.org/x/tools/cmd/goimports \
     golang.org/x/lint/golint \
-    && rm -rf $GOPATH/src \
-    && rm -rf $GOPATH/pkg
-
-RUN go get -u \
-    github.com/stamblerre/gocode \
-    github.com/uudashr/gopkgs/cmd/gopkgs \
+    github.com/alecthomas/gometalinter \
+    honnef.co/go/tools/... \
+    github.com/golangci/golangci-lint/cmd/golangci-lint \
+    github.com/mgechev/revive \
+    golang.org/x/tools/cmd/gopls \
+    github.com/go-delve/delve/cmd/dlv \
     && rm -rf $GOPATH/src \
     && rm -rf $GOPATH/pkg
 
