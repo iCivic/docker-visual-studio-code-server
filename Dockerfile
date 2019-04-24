@@ -3,24 +3,26 @@ FROM ubuntu:18.10
 # Packages
 RUN apt-get update && apt-get install --no-install-recommends -y \
     gpg \
-    curl \    
+    curl \
+    wget \
     lsb-release \
     add-apt-key \
-    ca-certificates \    
+    ca-certificates \
     dumb-init \
     && rm -rf /var/lib/apt/lists/*
 
 # CF CLI
-ENV CF_VERSION="6.43.0"
-RUN curl -sL "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_VERSION}&source=github-rel" | tar -zx -C /usr/local/bin
+RUN curl -sS -o - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | apt-key add
+RUN echo "deb https://packages.cloudfoundry.org/debian stable main" | tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    cf-cli \
+    && rm -rf /var/lib/apt/lists/*
 
-# HELM CLI
-ENV HELM_VERSION="v2.13.1"
-RUN curl -sL "https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar --strip-components=1 -zx -C /usr/local/bin
+# Helm CLI
+RUN curl "https://raw.githubusercontent.com/helm/helm/master/scripts/get" | bash
 
 # Kubectl CLI
-ENV KUBECTL_VERSION="v1.12.7"
-RUN curl -sL "https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl && chmod +x /usr/local/bin/kubectl
+RUN curl -sL "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" -o /usr/local/bin/kubectl && chmod +x /usr/local/bin/kubectl
 
 # Azure CLI
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
@@ -33,7 +35,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 RUN apt-get update && apt-get install --no-install-recommends -y \
     git \
     sudo \
-    wget \
     gdb \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
@@ -98,7 +99,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
 
-ENV CODE_VERSION="1.868-vsc1.33.1"
+ENV CODE_VERSION="1.939-vsc1.33.1"
 RUN curl -sL https://github.com/codercom/code-server/releases/download/${CODE_VERSION}/code-server${CODE_VERSION}-linux-x64.tar.gz | tar --strip-components=1 -zx -C /usr/local/bin code-server${CODE_VERSION}-linux-x64/code-server
 
 # Setup User
@@ -168,6 +169,8 @@ RUN mkdir -p ${VSCODE_EXTENSIONS}/yaml \
 
 RUN mkdir -p ${VSCODE_EXTENSIONS}/kubernetes \
     && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-kubernetes-tools/vsextensions/vscode-kubernetes-tools/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/kubernetes extension
+
+RUN helm init --client-only
 
 # Setup Chrome Preview
 RUN mkdir -p ${VSCODE_EXTENSIONS}/chrome-debugger \
