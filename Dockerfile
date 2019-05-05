@@ -1,4 +1,4 @@
-FROM ubuntu:18.10
+FROM ubuntu:19.04
 
 # Packages
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -38,7 +38,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Node SDK
-RUN curl -sL https://deb.nodesource.com/setup_11.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
     && apt-get update && apt-get install --no-install-recommends -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
@@ -98,7 +98,7 @@ ENV LANG en_US.utf8
 ENV DISABLE_TELEMETRY true
 
 ENV CODE_VERSION="1.939-vsc1.33.1"
-RUN curl -sL https://github.com/codercom/code-server/releases/download/${CODE_VERSION}/code-server${CODE_VERSION}-linux-x64.tar.gz | tar --strip-components=1 -zx -C /usr/local/bin code-server${CODE_VERSION}-linux-x64/code-server
+RUN curl -sL https://github.com/cdr/code-server/releases/download/${CODE_VERSION}/code-server${CODE_VERSION}-linux-x64.tar.gz | tar --strip-components=1 -zx -C /usr/local/bin code-server${CODE_VERSION}-linux-x64/code-server
 
 # Setup User
 RUN groupadd -r coder \
@@ -174,12 +174,12 @@ RUN mkdir -p ${VSCODE_EXTENSIONS}/kubernetes \
 
 RUN helm init --client-only
 
-# Setup Chrome Preview
-RUN mkdir -p ${VSCODE_EXTENSIONS}/chrome-debugger \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/msjsdiag/vsextensions/debugger-for-chrome/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/chrome-debugger extension
+# Setup Browser Preview
+RUN mkdir -p ${VSCODE_EXTENSIONS}/browser-debugger \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/msjsdiag/vsextensions/debugger-for-chrome/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/browser-debugger extension
 
-RUN mkdir -p ${VSCODE_EXTENSIONS}/chrome-preview \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/auchenberg/vsextensions/vscode-browser-preview/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/chrome-preview extension
+RUN mkdir -p ${VSCODE_EXTENSIONS}/browser-preview \
+    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/auchenberg/vsextensions/vscode-browser-preview/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/browser-preview extension
 
 # Setup User Workspace
 RUN mkdir -p /home/coder/project
