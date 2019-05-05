@@ -1,5 +1,4 @@
 {
-    "go.useLanguageServer": true,
     "telemetry.enableCrashReporter": false,
     "telemetry.enableTelemetry": false,
     "editor.formatOnPaste": true,

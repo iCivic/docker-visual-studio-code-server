@@ -34,17 +34,20 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     git \
     sudo \
     gdb \
+    pkg-config \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Node SDK
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
-    && apt-get update && apt-get install --no-install-recommends -y nodejs \
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
 
 # Golang SDK
-ENV GO_VERSION="1.12.4"
-RUN curl -sL https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz | tar -xz -C /usr/local
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    golang-1.12 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Python SDK
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -126,27 +129,6 @@ COPY --chown=coder:coder settings.json /home/coder/.local/share/code-server/User
 # Setup Go Extension
 RUN mkdir -p ${VSCODE_EXTENSIONS}/go \
     && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-vscode/vsextensions/Go/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/go extension
-
-RUN go get -u \
-    github.com/stamblerre/gocode \
-    github.com/uudashr/gopkgs/cmd/gopkgs \
-    github.com/ramya-rao-a/go-outline \
-    github.com/acroca/go-symbols \
-    golang.org/x/tools/cmd/guru \
-    golang.org/x/tools/cmd/gorename \
-    github.com/rogpeppe/godef \
-    github.com/zmb3/gogetdoc \
-    github.com/sqs/goreturns \
-    golang.org/x/tools/cmd/goimports \
-    golang.org/x/lint/golint \
-    github.com/alecthomas/gometalinter \
-    honnef.co/go/tools/... \
-    github.com/golangci/golangci-lint/cmd/golangci-lint \
-    github.com/mgechev/revive \
-    golang.org/x/tools/cmd/gopls \
-    github.com/go-delve/delve/cmd/dlv \
-    && rm -rf $GOPATH/src \
-    && rm -rf $GOPATH/pkg
 
 # Setup Python Extension
 RUN mkdir -p ${VSCODE_EXTENSIONS}/python \
