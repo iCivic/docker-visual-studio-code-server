@@ -12,6 +12,7 @@ This repository hosts a Dockerfile and Helm Chart to run VSCode on Kubernetes. W
 - [Java](https://openjdk.java.net/), Maven, Gradle & Debugging & Testing
 - [Python](https://www.python.org/) SDK & Debugging
 - [Node.js](https://nodejs.org) SDK & Debugging
+- [.NET Core](https://dotnet.microsoft.com/) SDK & [Samsung Debugger](https://github.com/Samsung/netcoredbg)
 - [Kubernetes](https://kubernetes.io/) Cluster Magenent
 - [Browser Preview](https://github.com/auchenberg/vscode-browser-preview) (Chromium inside VS Code)
 
