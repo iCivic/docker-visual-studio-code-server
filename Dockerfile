@@ -38,25 +38,23 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Node SDK
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    nodejs \
-    npm \
+# Node 10.x SDK
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# Golang SDK
+# Golang 1.13 SDK
 RUN curl -sL https://dl.google.com/go/go1.13.linux-amd64.tar.gz | tar -zx -C /usr/local
 
 # Python SDK
 RUN apt-get update && apt-get install --no-install-recommends -y \
     python3 \
-    python-dev \
+    python3-dev \
     python3-pip \
+    python3-setuptools \
+    python3-wheel \
+    python3-pylint-common \
     && rm -rf /var/lib/apt/lists/*
-
-RUN python3 -m pip install --upgrade setuptools \
-    && python3 -m pip install wheel \
-    && python3 -m pip install -U pylint
 
 # Java SDK
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -91,7 +89,7 @@ RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
 ENV DISABLE_TELEMETRY true
 
-ENV CODE_VERSION="2.1494-vsc1.38.1"
+ENV CODE_VERSION="2.1495-vsc1.38.1"
 RUN curl -sL https://github.com/cdr/code-server/releases/download/${CODE_VERSION}/code-server${CODE_VERSION}-linux-x86_64.tar.gz | tar --strip-components=1 -zx -C /usr/local/bin code-server${CODE_VERSION}-linux-x86_64/code-server
 
 # Setup User
@@ -162,6 +160,8 @@ ENV PATH "${PATH}:/home/coder/netcoredbg"
 # Setup User Workspace
 RUN mkdir -p /home/coder/project
 WORKDIR /home/coder/project
+
+COPY --chown=coder:coder examples /home/coder/examples
 
 EXPOSE 8080
 
