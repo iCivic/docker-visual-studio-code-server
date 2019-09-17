@@ -1,5 +1,0 @@
-apiVersion: v1
-appVersion: "1.696-vsc1.33.0"
-description: Visual Studio Code Server
-name: code-server
-version: 1.33.0

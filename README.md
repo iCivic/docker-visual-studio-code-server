@@ -28,26 +28,3 @@ This repository hosts a Dockerfile and Helm Chart to run VSCode on Kubernetes. W
 ```bash
 docker run -it --rm --name code-server --security-opt=seccomp:unconfined -p 127.0.0.1:8080:8080 -v $(pwd)/project:/home/coder/project monostream/code-server:latest
 ```
-
-## Install using Helm
-
-```bash
-cat <<EOF | helm install ./chart/ --name vscode --tiller-namespace=tiller -f -
-image:
-  tag: latest
-  pullPolicy: Always
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/tls-acme: "true"  
-  hosts:
-  - host: my-vscode.local
-    paths:
-    - /
-  tls:
-  - hosts:
-    - my-vscode.local
-    secretName: my-vscode-tls
-password: changemenow
-EOF
-```
