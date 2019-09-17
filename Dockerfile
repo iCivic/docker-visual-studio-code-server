@@ -69,24 +69,17 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     && rm -rf /var/lib/apt/lists/*
 
 # .NET Core SDK
-# RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
-# RUN echo "deb [arch=amd64] https://packages.microsoft.com/ubuntu/18.04/prod $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/microsoft-prod.list
-# RUN apt-get update && apt-get install --no-install-recommends -y \
-#    libunwind8 \
-#    dotnet-sdk-2.2 \
-#    && rm -rf /var/lib/apt/lists/*
+RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
+RUN echo "deb [arch=amd64] https://packages.microsoft.com/ubuntu/19.04/prod $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/microsoft-prod.list
+RUN apt-get update && apt-get install --no-install-recommends -y \
+   libunwind8 \
+   dotnet-sdk-2.2 \
+   && rm -rf /var/lib/apt/lists/*
 
 # Chromium
 RUN apt-get update && apt-get install --no-install-recommends -y \
     chromium-browser \
     && rm -rf /var/lib/apt/lists/*
-
-# Chrome
-# RUN curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
-# RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
-# RUN apt-get update && apt-get install --no-install-recommends -y \
-#    google-chrome-stable \
-#    && rm -rf /var/lib/apt/lists/*
 
 # Code-Server
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -115,9 +108,9 @@ ENV GOPATH "/home/coder/go"
 ENV PATH "${PATH}:/usr/local/go/bin:/home/coder/go/bin"
 
 # Setup Uset .NET Environment
-# ENV DOTNET_CLI_TELEMETRY_OPTOUT "true"
-# ENV MSBuildSDKsPath "/usr/share/dotnet/sdk/2.2.202/Sdks"
-# ENV PATH "${PATH}:${MSBuildSDKsPath}"
+ENV DOTNET_CLI_TELEMETRY_OPTOUT "true"
+ENV MSBuildSDKsPath "/usr/share/dotnet/sdk/2.2.402/Sdks"
+ENV PATH "${PATH}:${MSBuildSDKsPath}"
 
 # Setup User Visual Studio Code Extentions
 ENV VSCODE_USER "/home/coder/.local/share/code-server/User"
@@ -128,40 +121,47 @@ COPY --chown=coder:coder settings.json /home/coder/.local/share/code-server/User
 
 # Setup Go Extension
 RUN mkdir -p ${VSCODE_EXTENSIONS}/go \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-vscode/vsextensions/Go/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/go extension
+    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-vscode/vsextensions/Go/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/go extension
 
 # Setup Python Extension
 RUN mkdir -p ${VSCODE_EXTENSIONS}/python \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-python/vsextensions/python/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/python extension
+    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-python/vsextensions/python/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/python extension
 
 # Setup Java Extension
 RUN mkdir -p ${VSCODE_EXTENSIONS}/java \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/java/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java extension
+    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/java/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java extension
 
 RUN mkdir -p ${VSCODE_EXTENSIONS}/java-debugger \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-debug/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java-debugger extension
+    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-debug/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java-debugger extension
 
 RUN mkdir -p ${VSCODE_EXTENSIONS}/java-test \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-test/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java-test extension
+    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-java-test/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/java-test extension
 
 RUN mkdir -p ${VSCODE_EXTENSIONS}/maven \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-maven/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/maven extension
+    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vscjava/vsextensions/vscode-maven/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/maven extension
 
 # Setup Kubernetes Extension
 RUN mkdir -p ${VSCODE_EXTENSIONS}/yaml \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/vscode-yaml/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/yaml extension
+    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/redhat/vsextensions/vscode-yaml/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/yaml extension
 
 RUN mkdir -p ${VSCODE_EXTENSIONS}/kubernetes \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-kubernetes-tools/vsextensions/vscode-kubernetes-tools/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/kubernetes extension
+    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-kubernetes-tools/vsextensions/vscode-kubernetes-tools/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/kubernetes extension
 
 RUN helm init --client-only
 
 # Setup Browser Preview
 RUN mkdir -p ${VSCODE_EXTENSIONS}/browser-debugger \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/msjsdiag/vsextensions/debugger-for-chrome/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/browser-debugger extension
+    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/msjsdiag/vsextensions/debugger-for-chrome/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/browser-debugger extension
 
 RUN mkdir -p ${VSCODE_EXTENSIONS}/browser-preview \
-    && curl -JLs --retry 5 https://marketplace.visualstudio.com/_apis/public/gallery/publishers/auchenberg/vsextensions/vscode-browser-preview/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/browser-preview extension
+    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/auchenberg/vsextensions/vscode-browser-preview/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/browser-preview extension
+
+# Setup .NET Core Extension
+RUN mkdir -p ${VSCODE_EXTENSIONS}/csharp \
+    && curl -JLs https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-vscode/vsextensions/csharp/latest/vspackage | bsdtar --strip-components=1 -xf - -C ${VSCODE_EXTENSIONS}/csharp extension
+
+RUN curl -sL https://github.com/Samsung/netcoredbg/releases/download/latest/netcoredbg-linux-master.tar.gz | tar -zx -C /home/coder
+ENV PATH "${PATH}:/home/coder/netcoredbg"
 
 # Setup User Workspace
 RUN mkdir -p /home/coder/project
@@ -169,4 +169,5 @@ WORKDIR /home/coder/project
 
 EXPOSE 8080
 
-ENTRYPOINT ["dumb-init", "code-server"]
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["code-server"]
