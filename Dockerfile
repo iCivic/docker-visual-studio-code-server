@@ -45,9 +45,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Golang SDK
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    golang-1.12 \
-    && rm -rf /var/lib/apt/lists/*
+RUN curl -sL https://dl.google.com/go/go1.13.linux-amd64.tar.gz | tar -zx -C /usr/local
 
 # Python SDK
 RUN apt-get update && apt-get install --no-install-recommends -y \
@@ -103,8 +101,6 @@ RUN groupadd -r coder \
 USER coder
 
 # Setup User Go Environment
-RUN mkdir /home/coder/go
-ENV GOPATH "/home/coder/go"
 ENV PATH "${PATH}:/usr/local/go/bin:/home/coder/go/bin"
 
 # Setup Uset .NET Environment
