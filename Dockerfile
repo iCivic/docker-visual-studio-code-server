@@ -73,7 +73,7 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor |
 RUN echo "deb [arch=amd64] https://packages.microsoft.com/ubuntu/19.04/prod $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/microsoft-prod.list
 RUN apt-get update && apt-get install --no-install-recommends -y \
    libunwind8 \
-   dotnet-sdk-2.2 \
+   dotnet-sdk-2.2=2.2.402-1 \
    && rm -rf /var/lib/apt/lists/*
 
 # Chromium
